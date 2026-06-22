@@ -2,7 +2,7 @@
 
 <img src="screens/Arnvoid 1.gif" alt="Front screen of webapp" width="100%" /></td>
 
-Arnvoid create an AI operating system named 2KI (2D Knowledge Interface). This system teach an LLM to process information as a series of neurons in a dark spatial environment. The neuron represent a self-thinking unit - a unit that self-analyze and self-intrepret information for user in a deep reasoning analysis. The neuron grow itself, connect itself, creating a network of neurons serve to run under user's interaction. 
+Arnvoid create an AI operating system named 2KI *(2D Knowledge Interface)*. This system teach an LLM to process information as a series of neurons in a dark spatial environment. The neuron represent a self-thinking unit - a unit that self-analyze and self-intrepret information for user in a deep reasoning analysis. The neuron grow itself, connect itself, creating a network of neurons serve to run under user's interaction. 
 
 **Live product:** [arnvoid.com](https://arnvoid.com)
 Closed source. Built solo over 9 months.
@@ -31,7 +31,7 @@ Upload a research paper. The AI breaks it into neurons — self-analyzing though
 
 | Layer | Technology | Notes |
 |---|---|---|
-| Frontend | React 18 + TypeScript + Vite | SPA with WebGL canvas |
+| Frontend | React 18 + TypeScript + Vite | SPA with Canvas 2D rendering |
 | Physics engine | Custom xPBD | Hand-authored constraint solver |
 | Canvas rendering | HTML Canvas 2D | Camera containment and DPR handling |
 | Backend API | Cloudflare Workers | Auth, LLM dispatch, payments, persistence |
@@ -51,7 +51,7 @@ Arnvoid is split into three runtime layers: the browser app, the Cloudflare Work
 
 | Layer | Location | Owns |
 |---|---|---|
-| Browser app | `src/` | React UI, WebGL graph rendering, xPBD physics, D1/D2 windows, saved-map restore UI |
+| Browser app | `src/` | React UI, 2D Canvas graph rendering, xPBD physics, D1/D2 windows, saved-map restore UI |
 | Worker API | `cloudflare-worker/src/` | Google OAuth sessions, analyze requests, mode resolution, LLM provider routing, billing, payment routes |
 | Storage | Cloudflare D1 + R2 | Sessions, saved interfaces, rupiah ledger rows, document artifact blobs |
 
@@ -63,14 +63,14 @@ Arnvoid is split into three runtime layers: the browser app, the Cloudflare Work
 4. The LLM pipeline builds the prompt, calls the configured provider, and expects strict graph-shaped JSON.
 5. The response is validated against the schema, repaired when possible, charged, and persisted.
 6. The browser receives the graph payload and applies it through the topology control layer.
-7. The xPBD solver positions the neurons while the WebGL renderer draws the map.
+7. The xPBD solver positions the neurons while the 2D Canvas renderer draws the map.
 8. Pressing a neuron opens a D1 window with that neuron's analysis.
 
 ### Browser Runtime
 
 The React app is organized around `AppShell`, which coordinates screen rendering, overlay order, sidebar state, transitions, saved-interface sync, and graph entry. Domain logic is kept under `src/screens/appshell/` so the shell remains orchestration-focused.
 
-The graph runtime owns the physics lifecycle, camera containment, WebGL render loop, and SV2 D1/D2 windows. Topology updates are centralized before they reach the solver, so analysis results, restore flows, and UI actions all mutate the graph through the same control path.
+The graph runtime owns the physics lifecycle, camera containment, 2D Canvas render loop, and SV2 D1/D2 windows. Topology updates are centralized before they reach the solver, so analysis results, restore flows, and UI actions all mutate the graph through the same control path.
 
 Input routing is explicit. Panels, overlays, and D1 windows must own pointer and wheel events while open so the canvas cannot react underneath them.
 
@@ -89,7 +89,7 @@ Saved interfaces sync through an outbox pattern with timestamp-based ordering. U
 | System | Main files | Responsibility |
 |---|---|---|
 | Physics solver | `src/physics/engine/` | Runs the xPBD simulation that positions neurons and knowledge links |
-| WebGL renderer | `src/playground/rendering/` | Draws the graph, camera, labels, DPR-aware canvas output, and overlays |
+| 2D Canvas renderer | `src/playground/rendering/` | Draws the graph, camera, labels, DPR-aware canvas output, and overlays |
 | Mode authority | `src/shared/policies/analyze/`, `cloudflare-worker/src/llm/` | Resolves requested and executed analysis modes across client and server |
 | LLM schema pipeline | `cloudflare-worker/src/llm/` | Builds prompts, validates structured graph JSON, and repairs invalid responses when possible |
 | Billing ledger | `cloudflare-worker/src/payments/`, `cloudflare-worker/src/shared/common.ts` | Computes analysis charges and records idempotent ledger entries |
