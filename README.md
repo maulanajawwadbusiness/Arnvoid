@@ -1,68 +1,28 @@
-# Arnvoid -- 2KI (2D Knowledge Interface)
+# Arnvoid
 
-A spatial thinking environment where self-analyzing neurons exist under physical laws, each one an independent agent holding its own reasoned viewpoint about a document -- and you interact with them directly with your hands.
+![Front screen of the webapp](screens/Arnvoid 1.gif)
 
-**Live product:** [arnvoid.com](https://arnvoid.com) . Closed source . Built solo by Maulana Jawwad Wirasyahputra
+Arnvoid create an AI operating system named 2KI (2D Knowledge Interface). This system teach an LLM to process information as a series of neurons in a dark spatial environment. The neuron represent a self-thinking unit - a unit that self-analyze and self-intrepret information for user in a deep reasoning analysis. The neuron grow itself, connect itself, creating a network of neurons serve to run under user's interaction. User interact with this neuron in their canvas, either through mouse drag (desktop) or finger touch (touchscreen). 2KI is currently in beta state. It is currently in early tested to analyze research paper in universities.
+
+**Live product:** [arnvoid.com](https://arnvoid.com).
 
 ---
 
 ## What It Does
 
-Arnvoid puts self-analyzing neurons in your hands for the purpose of deep reasoning over documents. You upload a research paper or writing -- PDF, TXT, or Markdown -- and the LLM acts as hive swarm source, spawning a colony of neurons. Each neuron is not a label on a graph. It is a self-agentic unit, independently responsible for a slice of reasoning: one neuron holds a claim, another holds the evidence supporting it, another holds a hidden assumption, another holds a limitation. Each neuron carries its own analysis, its own confidence about what it knows, its own framing of its portion of the document. Knowledge links are directed connections between neurons -- they encode which neuron's reasoning depends on, contradicts, or extends another's. You do not look at the document through a graph. You are looking at the AI's thinking process made physical and touchable. You press a neuron and it speaks -- opening a window that reveals its analysis, its confidence score, its specific reasoning about its slice of the document.
+Upload a research paper. The AI breaks it into neurons — self-analyzing thought units — connected by knowledge links on a physics-driven spatial map. Tap a neuron to open its analysis window. Interact with the neurons further to synthesize insights.
 
-Neurons exist under physical laws, not in a decorative layout. The xPBD constraint solver governs their spatial relationships: knowledge link tension pulls connected neurons together, repulsion forces maintain readable separation, and the whole colony drifts toward equilibrium like a system finding its rest state. When two neurons are strongly linked, the physics pulls them closer -- that tension IS the relationship, made physical. When you drag a neuron, you are moving an agent through mind-space, and its neighbors follow because they are connected by law, not by a layout algorithm. The physics is the spatial reality these agents inhabit. The system is built for deep reading, research synthesis, and understanding complex documents through direct interaction with individual reasoning units.
+<table>
+      <tr>
+        <td><img src="screens/Arnvoid 2.gif" alt="Neural Map" width="100%" /></td>
+        <td><img src="screens/Arnvoid 3.gif" alt="Analysis from Neuron Unit" width="100%" /></td>
+      </tr>
+      <tr>
+        <td align="center">A Neural Map</td>
+        <td align="center">Analysis from Neuron Unit</td>
+      </tr>
+</table>
 
----
-
-## Screens
-
-<!-- GIF_PLACEHOLDER: prompt-screen -- the onboarding/prompt entry screen with the live physics graph preview floating above the prompt input -->
-
-<!-- GIF_PLACEHOLDER: neural-map -- the main graph screen showing neurons and knowledge links under physics simulation, with the sidebar expanded showing saved Peta Neural sessions -->
-
-<!-- GIF_PLACEHOLDER: d1-window -- a neuron being tapped, the D1 analysis window opening with edge connectors back to the graph, showing the analysis text panel -->
-
----
-
-## Architecture
-
-The system is split into three runtime layers that serve one surface -- the user's browser, running a React SPA that renders a WebGL canvas where neurons exist under physical law. When a user submits a document on the prompt screen, the request hits the Cloudflare Worker edge layer first. The Worker validates the session cookie, checks the user's rupiah balance, executes the mode authority decision (classic vs skeleton modes), and dispatches the LLM call through a gateway seam that isolates provider details from analysis logic. The LLM acts as hive swarm source -- its structured JSON response is not a summary but a colony specification: typed neurons (claim, evidence, method, assumption, limitation, bridge, definition) each initialized with their own analytical role, connected by directed semantic edges (supports, challenges, depends_on, produces, limits). This specification is parsed, validated against a strict schema with optional semantic repair, and persisted to D1. The Worker returns the colony to the frontend, which applies it through a centralized topology control seam. The physics engine then governs how these new neurons settle into their spatial relationships under xPBD constraints, and the WebGL renderer draws the frame.
-
-The frontend layer is organized around the AppShell -- a thin orchestration component that wires together screen rendering, overlay layering, sidebar state, and transition sequencing. Screen content, onboarding flow, modals, saved interface sync, and the graph playground are all extracted into domain-specific seams under `src/screens/appshell/`. The graph playground layer owns the physics engine lifecycle, the custom WebGL rendering loop with camera containment, and the SV2-native D1/D2 window system. When you press a neuron, the D1 window is that neuron speaking -- it reveals the agent's own analysis, confidence, and reasoning. Input events follow a strict doctrine: when any overlay or panel is open, it must fully own pointer and wheel events so the canvas never reacts underneath.
-
-The worker layer on Cloudflare handles everything that touches user data or infrastructure. Auth is Google OAuth with server-side session cookies. Saved interfaces sync through an outbox pattern with timestamp-based ordering. Document artifacts go to R2. The billing system computes a tiered flat charge -- `ceil(charCount / 50000) * 750 Rp` -- and persists each charge to D1's `rupiah_ledger` with idempotency on `(reason, ref_type, ref_id)`. Users top up their balance via Midtrans GoPay QRIS. Every flow -- analyze, save, restore, pay -- is session-authenticated and gated through the Worker, making the edge layer the single authority for user state.
-
-### Layer Map
-
-| Layer | Location | Role |
-|---|---|---|
-| WebGL Canvas | `src/playground/rendering/` | Custom render loop, camera containment, DPR management |
-| Physics Engine | `src/physics/engine/` (33 files) | xPBD solver governing spatial relationships between neurons |
-| AppShell | `src/screens/appshell/` | Screen orchestration, overlay/transition sequencing, sidebar state |
-| Frontend SPA | `src/` (React + Vite) | App structure, panel composition, input routing, canvas binding |
-| Cloudflare Worker | `cloudflare-worker/src/` | Auth, session, LLM analyze dispatch, payment routes, D1/R2 persistence |
-| LLM Pipeline | `cloudflare-worker/src/llm/` | Mode authority, gateway seam, prompt building, strict schema parsing, semantic repair |
-| Billing & Ledger | `cloudflare-worker/src/payments/`, `cloudflare-worker/src/shared/common.ts` | Tiered flat charge, rupiah ledger persistence, Midtrans integration |
-| Auth | `cloudflare-worker/src/auth/` | Google OAuth, server-side session cookies, CORS hardening |
-| Storage | Cloudflare D1 + R2 | Relational data (sessions, saved interfaces, rupiah ledger) + document blobs |
-
----
-
-## Engineering Highlights
-
-**Custom xPBD Physics Solver as Spatial Law.** Not a D3 or force-graph wrapper. The engine in `src/physics/engine/` (33 files) implements a multi-stage tick pipeline: preflight, force calculation, semi-implicit Euler integration, Gauss-Seidel constraint iteration, post-solve history reconciliation, energy-gated spacing pass, velocity damping, and sleep detection. The solver is not a layout algorithm -- it is the spatial law that governs how neurons relate to each other in mind-space. Knowledge link tension pulls connected neurons together; that tension IS the relationship made physical. When the system falls behind real time, it drops frames rather than accumulating lag -- visual stutter over temporal syrup. The solver has explicit constraint budgets, correction residual carry-over for clipped iterations, and adaptive degradation levels (Stressed -> Fatal).
-
-**Server-Authoritative Mode Resolution.** Three analysis modes (classic, skeleton_v1, skeleton_v2) with a shared pure resolver (`resolveAnalyzeModePure.ts`) running on both client and server. The server independently re-decides the executed mode through `resolveServerExecutedMode.ts`, preventing client-side mode manipulation. Each mode has a full registry entry defining its physics profile, UI semantics, spacing behavior, and restore policy in `modeStrategyRegistry.ts`. The mode determines how the hive swarm source spawns the neuron colony -- which roles exist, how they connect, how they settle.
-
-**Tiered Flat-Charge Billing with Idempotency.** Every analysis is charged `ceil(charCount / 50000) * 750 Rp`, computed on the Worker and persisted to D1 `rupiah_ledger` with a composite idempotency key on `(reason, ref_type, ref_id)`. This means network retries or worker replay cannot double-charge a user. The billing session lifecycle spans three phases: preflight balance check, mid-execution checkpoint commit, and post-execution final reconciliation. Free-pool is legacy code and does not run.
-
-**Strict Structured JSON with Semantic Repair.** The LLM response must conform to a recursive strict schema where every `properties` key is mirrored in `required` and `additionalProperties` is false at every object level. When the raw model output fails validation, a semantic repair pass (`skeletonV2SemanticRepair.ts`) attempts to salvage the response by repairing structural issues without losing content -- a pragmatic middle ground between total failure and blind acceptance. This matters because the colony specification must be structurally sound before neurons can be born from it.
-
-**Shared Contract Mirrors with CJS/ESM Interop.** The analyze mode contracts, SV2 schema, canonical response types, and resolution logic are maintained in three mirror files (`.ts`, `.cjs`, `.js`) that must always agree. A dedicated contract test suite (`test:mode-strategy-registry-contracts`, `test:analyze-module-interop-contracts`) catches drift between mirrors before it reaches production. CJS files are strictly gated from browser imports -- this interop discipline was hard-won from production crashes.
-
-**Overlay-First Input Doctrine.** The canvas is the substrate where neurons exist; everything else floats above it. When any panel or overlay is open, it must fully own pointer and wheel events within its bounds so the canvas never reacts to leaked input. This is enforced through explicit `onPointerDown` stop-propagation on every interactive child, backdrop shielding, and a `pointerEvents: 'auto'` overlay wrapper. The doctrine is documented alongside the invariant that panels are "input black holes."
-
-**Saved Interfaces Outbox Sync.** The save/restore system uses an outbox pattern: local commits happen immediately, then an async sync pushes changes to the Worker with timestamp-based ordering truth. The sync layer includes retry with backoff, identity isolation, and conflict resolution -- all in dedicated seams under `src/screens/appshell/savedInterfaces/`. Restore operations use a flight coordinator (`restoreFlightCoordinator.ts`) that queues boundary invalidations until restore settles, preventing mid-restore state corruption when a saved colony of neurons is brought back to life.
 
 ---
 
@@ -71,27 +31,107 @@ The worker layer on Cloudflare handles everything that touches user data or infr
 | Layer | Technology | Notes |
 |---|---|---|
 | Frontend | React 18 + TypeScript + Vite | SPA with WebGL canvas |
-| Physics Engine | Custom xPBD (33 files) | Hand-authored constraint solver governing neuron spatial law |
-| Canvas Rendering | Custom WebGL | Camera containment, DPR handling |
+| Physics engine | Custom xPBD | Hand-authored constraint solver |
+| Canvas rendering | HTML Canvas 2D | Camera containment and DPR handling |
 | Backend API | Cloudflare Workers | Auth, LLM dispatch, payments, persistence |
 | Database | Cloudflare D1 | Sessions, saved interfaces, billing ledger |
-| Blob Storage | Cloudflare R2 | Uploaded document artifacts |
-| LLM Provider | OpenRouter -> Cerebras | Single model: `gpt-oss-120b` |
+| Blob storage | Cloudflare R2 | Uploaded document artifacts |
+| LLM provider | Cerebras | Current model: `gpt-oss-120b` |
 | Payments | Midtrans | GoPay QRIS top-ups |
 | Auth | Google OAuth (GIS) | Server-side cookie sessions |
-| Testing | Vitest, Playwright, contract suites | Mode strategy, schema parity, eval harness |
-| CI/CD | GitHub Actions | Acceptance gate, eval guard |
 
 ---
 
-## Who Built This
+## Architecture
 
-I am Maulana Jawwad Wirasyahputra, a software engineer with 7 years of experience spanning full-stack development, AI systems engineering, and infrastructure. I have been building production AI applications for 3 years and have operated my own software venture for 3 years. This project is the result of that experience applied end-to-end.
+Arnvoid is split into three runtime layers: the browser app, the Cloudflare Worker API, and Cloudflare storage. The browser owns the interactive neural map. The Worker owns authenticated application state, LLM execution, billing, and payments. D1 and R2 persist sessions, saved maps, ledger entries, and uploaded document artifacts.
 
-When I say built solo, I mean the entire system: the xPBD physics engine and its 33-file solver pipeline that governs how neurons relate in mind-space, the WebGL canvas renderer with camera containment, the AppShell architecture with its overlay sequencing and input doctrine, the LLM analysis pipeline where the hive swarm source spawns colonies of self-agentic neurons through server-authoritative mode resolution and strict schema enforcement, the Cloudflare Worker backend with auth, session management, saved interface sync, and rupiah ledger billing, the Midtrans payment integration, and the frontend UI from prompt screen through neural map. No off-the-shelf physics, no boilerplate backend framework, no third-party graph library. Every seam was an engineering decision.
+### Runtime Layers
+
+| Layer | Location | Owns |
+|---|---|---|
+| Browser app | `src/` | React UI, WebGL graph rendering, xPBD physics, D1/D2 windows, saved-map restore UI |
+| Worker API | `cloudflare-worker/src/` | Google OAuth sessions, analyze requests, mode resolution, LLM provider routing, billing, payment routes |
+| Storage | Cloudflare D1 + R2 | Sessions, saved interfaces, rupiah ledger rows, document artifact blobs |
+
+### Analysis Flow
+
+1. The user submits a research paper, an instruction, or both from the prompt screen.
+2. The Worker validates the `arnvoid_session` cookie and checks the user's rupiah balance.
+3. The server resolves the executed analysis mode instead of trusting the client request directly.
+4. The LLM pipeline builds the prompt, calls the configured provider, and expects strict graph-shaped JSON.
+5. The response is validated against the schema, repaired when possible, charged, and persisted.
+6. The browser receives the graph payload and applies it through the topology control layer.
+7. The xPBD solver positions the neurons while the WebGL renderer draws the map.
+8. Pressing a neuron opens a D1 window with that neuron's analysis.
+
+### Browser Runtime
+
+The React app is organized around `AppShell`, which coordinates screen rendering, overlay order, sidebar state, transitions, saved-interface sync, and graph entry. Domain logic is kept under `src/screens/appshell/` so the shell remains orchestration-focused.
+
+The graph runtime owns the physics lifecycle, camera containment, WebGL render loop, and SV2 D1/D2 windows. Topology updates are centralized before they reach the solver, so analysis results, restore flows, and UI actions all mutate the graph through the same control path.
+
+Input routing is explicit. Panels, overlays, and D1 windows must own pointer and wheel events while open so the canvas cannot react underneath them.
+
+### Worker Runtime
+
+The Worker is the authority for user-facing state. It handles Google OAuth sessions, CORS, balance checks, analysis execution, saved-interface sync, document artifact storage, Midtrans payment routes, and D1/R2 access.
+
+Billing uses a tiered flat charge: `ceil(charCount / 50000) * 750 Rp`. Each analysis charge is written to D1's `rupiah_ledger` with idempotency on `(reason, ref_type, ref_id)`, so retries cannot double-charge a user.
+
+Saved interfaces sync through an outbox pattern with timestamp-based ordering. Uploaded document artifacts are stored in R2, while D1 stores session records, saved-map metadata, and ledger entries.
 
 ---
+
+## Core Systems
+
+| System | Main files | Responsibility |
+|---|---|---|
+| Physics solver | `src/physics/engine/` | Runs the xPBD simulation that positions neurons and knowledge links |
+| WebGL renderer | `src/playground/rendering/` | Draws the graph, camera, labels, DPR-aware canvas output, and overlays |
+| Mode authority | `src/shared/policies/analyze/`, `cloudflare-worker/src/llm/` | Resolves requested and executed analysis modes across client and server |
+| LLM schema pipeline | `cloudflare-worker/src/llm/` | Builds prompts, validates structured graph JSON, and repairs invalid responses when possible |
+| Billing ledger | `cloudflare-worker/src/payments/`, `cloudflare-worker/src/shared/common.ts` | Computes analysis charges and records idempotent ledger entries |
+| Saved interfaces | `src/screens/appshell/savedInterfaces/`, Cloudflare D1 | Saves, restores, and syncs neural maps across sessions |
+| Input ownership | `src/screens/appshell/`, `src/playground/` | Prevents graph pointer events from leaking through active panels and overlays |
+
+### Physics Solver
+
+The graph is not laid out with D3 or a force-graph package. Arnvoid uses a custom xPBD solver in `src/physics/engine/`. The tick pipeline covers force calculation, integration, constraint solving, post-solve reconciliation, velocity damping, and sleep detection.
+
+The solver is bounded per frame. If runtime load is too high, the renderer drops simulation debt instead of letting graph time drift behind real time.
+
+### Mode Authority
+
+Analysis mode selection is resolved on both sides of the system. The client uses the shared resolver in `src/shared/policies/analyze/resolveAnalyzeModePure.ts`; the Worker resolves the executed mode again before running analysis. The server result is the authority.
+
+Mode behavior is centralized in `modeStrategyRegistry.ts`, including physics profile, UI semantics, spacing policy, and restore behavior.
+
+### Structured LLM Output
+
+The LLM returns graph-shaped JSON, not free-form prose. The payload describes typed neurons and directed semantic links. Before the graph reaches the browser, the Worker validates it against the SV2 schema and attempts semantic repair when the response is structurally close but invalid.
+
+This keeps the browser graph runtime separate from provider-specific response quirks.
+
+### Billing
+
+Analysis billing uses a tiered flat charge:
+
+```text
+ceil(charCount / 50000) * 750 Rp
+```
+
+The Worker writes charges to D1's `rupiah_ledger` with idempotency on `(reason, ref_type, ref_id)`. Retries and Worker replays reuse the same ledger identity instead of charging twice.
+
+### Saved Interfaces
+
+Saved neural maps are committed locally first, then synced to the Worker through an outbox. Timestamp-based ordering decides which write wins. Restore paths use session and restore-flight guards so stale async work cannot overwrite the active graph.
+
+### Input Ownership
+
+The graph canvas is the base interaction layer. Any active panel, modal, or D1 window must own pointer and wheel events inside its bounds. Overlay code uses explicit event shielding so graph drag, pan, and zoom handlers do not receive leaked input.
+
 
 ## License
 
-All rights reserved. This is a closed-source commercial product. The repository exists to demonstrate engineering capability -- the code itself is private.
+All rights reserved. This is a closed-source product. The repository exists to demonstrate engineering capability -- the code itself is private.
