@@ -1,4 +1,4 @@
-# Arnvoid (beta)
+# Arnvoid (Beta)
 
 <img src="screens/Arnvoid 1.gif" alt="Front screen of webapp" width="100%" /></td>
 
@@ -11,7 +11,7 @@ Closed source. Built solo over 9 months.
 
 ## What It Does
 
-Upload a research paper. The AI breaks it into neurons — self-analyzing thought units — connected by knowledge links on a physics-driven spatial map. Tap a neuron to open its analysis window. Interact with the neurons further to synthesize insights.
+Upload a research paper. The AI breaks it into neurons — self-analyzing thought units — connected by knowledge links on a physics-driven spatial map. Tap a neuron to open its analysis window. Interact with the neurons further to read insights.
 
 <table>
       <tr>
