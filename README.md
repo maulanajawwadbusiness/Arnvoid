@@ -2,7 +2,7 @@
 
 <img src="screens/Arnvoid 1.gif" alt="Front screen of webapp" width="100%" /></td>
 
-Arnvoid create an AI operating system named 2KI *(2D Knowledge Interface)*. This system teach an LLM to process information as a series of neurons in a dark spatial environment. The neuron represent a self-thinking unit - a unit that self-analyze and self-intrepret information for user in a deep reasoning analysis. The neuron grow itself, connect itself, creating a network of neurons serve to run under user's interaction. 
+Arnvoid create an AI operating system named 2KI *(2D Knowledge Interface)*. This system teach an LLM to process information as a series of neurons in a dark spatial environment. The neuron represent a self-thinking unit - a unit that self-analyze and self-intrepret information for user in a deep reasoning analysis. The neuron grow itself, connect itself, creating a network of neurons that serve to run under user's interaction. 
 
 **Live product:** [arnvoid.com](https://arnvoid.com)
 Closed source. Built solo over 9 months.
